@@ -1,15 +1,15 @@
 /*
  * @Author: xiaohu
  * @Date: 2024-02-29 17:19:16
- * @LastEditors: xiaohu
- * @LastEditTime: 2024-02-29 18:01:56
+ * @LastEditors: yeyu98
+ * @LastEditTime: 2024-02-29 22:43:34
  * @FilePath: \interview-handwrite\src\promise.js
  * @Description: 
  */
 /**
  * 支持同步回调
  * 支持异步回调：通过成功以及失败的队列收集
- * 支持链式调用
+ * 支持链式调用&值穿透特性
  * */ 
 const PENDING = 'pending'
 const FULFILLED = 'fulfilled'
@@ -48,11 +48,11 @@ class _Promise {
   }
   then(onfulfilled, onrejected) {
     // 同步执行
-    if(this.status === FULFILLED) {
+    if(this.status === FULFILLED && typeof onfulfilled === 'function') {
       onfulfilled(this.value)
     }
     // 同步执行
-    if(this.status === REJECTED) {
+    if(this.status === REJECTED  && typeof onrejected === 'function') {
       onrejected(this.reason)
     }
     // 异步需要等待执行
@@ -63,15 +63,71 @@ class _Promise {
     }
     return this
   }
+  static resolve(data) {
+    return new _Promise((resolve) => {
+      resolve(data)
+    })
+  }
+  static reject(err) {
+    return new _Promise((resolve, reject) => {
+      reject(err)
+    })
+  }
+  static all(values) {
+    return new _Promise((resolve, reject) => {
+      if(!values || values.length === 0) {
+        resolve([])
+        return
+      }
+      const result = []
+      let count = 0
+      for(let i = 0; i < values.length; i++) {
+        const p = values[i]
+        p.then(res => {
+          result[i] = res
+          count++
+          if(count === values.length) {
+            resolve(result)
+          }
+        }).catch(err => {
+          reject(err)
+        })
+      }
+    })
+  }
+  static race(values) {
+    // 那个最快返回哪个
+    return new _Promise((resolve, reject) => {
+      if(!values || values.length === 0) {
+        resolve('')
+        return
+      }
+      for(let i = 0; i < values.length; i++) {
+        const p = values[i]
+        p.then(res => {
+            resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      }
+    })
+  }
 }
 
-let p = new _Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve('333')
-  }, 1000);
-}).then(res => {
-  console.log('🥳🥳🥳 第一个--->>>', res)
-  return '11111'
-}).then(res => {
-  console.log('🥳🥳🥳 第二个--->>>', res)
+// let p = new _Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve('333')
+//   }, 1000);
+// }).then(res => {
+//   console.log('🥳🥳🥳 第一个--->>>', res)
+//   return '11111'
+// }).then(res => {
+//   console.log('🥳🥳🥳 第二个--->>>', res)
+// })
+const requests = [];
+for (let i = 1; i <= 5; i++) {
+  requests.push( fetch(`https://jsonplaceholder.typicode.com/todos/${i}`).then(res => res.json()));
+}
+_Promise.all(requests).then(res => {
+  console.log(res)
 })
