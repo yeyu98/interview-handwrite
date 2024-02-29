@@ -10,3 +10,4 @@
 
 [并发请求数量控制](./src/limit-request.js)
 [LazyMan](./src/lazy-man.js)
+[Promise.all](./src/promise-all.js)
