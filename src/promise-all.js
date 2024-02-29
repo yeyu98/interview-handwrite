@@ -6,7 +6,10 @@
  * @FilePath: \interview-handwrite\src\promise-all.js
  * @Description: 
  */
-
+/**
+ * 所有的promise都执行完了，返回数组结果
+ * 有一个错误就返回错误
+ * */ 
 const promiseAll = (list) => {
   return new Promise((resolve, reject) => {
     if(!list || list.length === 0) {
