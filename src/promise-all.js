@@ -2,13 +2,13 @@
  * @Author: xiaohu
  * @Date: 2024-02-29 16:48:58
  * @LastEditors: xiaohu
- * @LastEditTime: 2024-02-29 16:57:48
+ * @LastEditTime: 2024-02-29 17:18:19
  * @FilePath: \interview-handwrite\src\promise-all.js
  * @Description: 
  */
 /**
- * 所有的promise都执行完了，返回数组结果
- * 有一个错误就返回错误
+ * 如果给定的 iterable 中所有的 promise 都已兑现。兑现值是一个数组，其元素顺序与传入的 promise 一致，而非按照兑现的时间顺序排列。
+ * 如果给定的 iterable 中的任意 promise 被拒绝。拒绝原因是第一个拒绝的 promise 的拒绝原因
  * */ 
 const promiseAll = (list) => {
   return new Promise((resolve, reject) => {
