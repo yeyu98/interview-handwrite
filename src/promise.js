@@ -1,15 +1,19 @@
 /*
  * @Author: xiaohu
  * @Date: 2024-02-29 17:19:16
- * @LastEditors: yeyu98
- * @LastEditTime: 2024-02-29 22:43:34
+ * @LastEditors: xiaohu
+ * @LastEditTime: 2024-03-01 10:29:14
  * @FilePath: \interview-handwrite\src\promise.js
  * @Description: 
  */
 /**
  * 支持同步回调
  * 支持异步回调：通过成功以及失败的队列收集
- * 支持链式调用&值穿透特性
+ * 支持链式调用&值穿透特性：普通值则成功的返回到下一个then成功的回调中，失败的返回到下一个then失败的回调中，promise则会等待完成再重复上一个步骤，如果是同一个promise引用抛出异常
+ * resolve 
+ * reject
+ * all
+ * race
  * */ 
 const PENDING = 'pending'
 const FULFILLED = 'fulfilled'
