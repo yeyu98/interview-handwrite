@@ -1,8 +1,8 @@
 /*
  * @Author: xiaohu
  * @Date: 2024-02-29 17:19:16
- * @LastEditors: xiaohu
- * @LastEditTime: 2024-03-01 10:29:14
+ * @LastEditors: yeyu98
+ * @LastEditTime: 2024-03-02 22:04:38
  * @FilePath: \interview-handwrite\src\promise.js
  * @Description: 
  */
@@ -50,22 +50,105 @@ class _Promise {
     }
     
   }
-  then(onfulfilled, onrejected) {
-    // 同步执行
-    if(this.status === FULFILLED && typeof onfulfilled === 'function') {
-      onfulfilled(this.value)
+  then(onFulfilled, onRejected) {
+    /*
+      // 同步执行
+      if(this.status === FULFILLED && typeof onfulfilled === 'function') {
+        onfulfilled(this.value)
+      }
+      // 同步执行
+      if(this.status === REJECTED  && typeof onrejected === 'function') {
+        onrejected(this.reason)
+      }
+      // 异步需要等待执行
+      if(this.status = PENDING) {
+        // 收集成功以及失败的回调为了异步处理
+        this.onResolveCallbacks.push(() => onfulfilled(this.value))
+        this.onRejectedCallbacks.push(() => onrejected(this.reason))
+      }
+    */ 
+
+    /**
+     * 普通值和函数则成功的返回到下一个then成功的回调中，失败的返回到下一个then失败的回调中
+     * promise则会等待完成再重复上一个步骤，如果是同一个promise引用抛出异常
+     * 
+    */
+
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value
+    onRejected = typeof onRejected === 'function' ? onRejected : err => { throw err }
+    
+    const resolvePromise = (newPromise, x, resolve, reject) => {
+      if(newPromise === x) {
+        return reject(new TypeError('Chaining cycle detected for promise #<Promise>'))
+      }
+      // 对象或函数
+      if(typeof x === 'function' || (typeof x === 'object' && x !== null)) {
+        try {
+          // 是promise
+          if(x instanceof _Promise) {
+            x.then(res => {
+              // 递归解析 promise里可能还有promise
+              resolvePromise(newPromise, res, resolve,reject)
+            }, err => {
+              reject(err)
+            })
+          } else {
+            // 对象或函数
+            resolve(x)
+          }
+        }catch(err) {
+          reject(err)
+        }
+      } else {
+        // 普通值
+        resolve(x)
+      }
     }
-    // 同步执行
-    if(this.status === REJECTED  && typeof onrejected === 'function') {
-      onrejected(this.reason)
-    }
-    // 异步需要等待执行
-    if(this.status = PENDING) {
-      // 收集成功以及失败的回调为了异步处理
-      this.onResolveCallbacks.push(() => onfulfilled(this.value))
-      this.onRejectedCallbacks.push(() => onrejected(this.reason))
-    }
-    return this
+    const newPromise = new Promise((resolve, reject) => {
+      if(this.status === FULFILLED) {
+        queueMicrotask(() => {
+          try {
+            let x = onFulfilled(this.value)
+            resolvePromise(newPromise, x, resolve, reject)
+          } catch(err) {
+            reject(err)
+          }
+        })
+      }
+      if(this.status === REJECTED) {
+        queueMicrotask(() => {
+          try {
+            let x = onRejected(this.reason)
+            resolvePromise(newPromise, x, resolve, reject)
+          } catch(err) {
+            reject(err)
+          }
+        })
+      }
+      if(this.status === PENDING) {
+        this.onResolveCallbacks.push(() => {
+          queueMicrotask(() => {
+            try {
+              let x = onFulfilled(this.value)
+              resolvePromise(newPromise, x, resolve, reject)
+            } catch(err) {
+              reject(err)
+            }
+          })
+        })
+        this.onRejectedCallbacks.push(() => {
+          queueMicrotask(() => {
+            try {
+              let x = onRejected(this.reason)
+              resolvePromise(newPromise, x, resolve, reject)
+            } catch(err) {
+              reject(err)
+            }
+          })
+        })
+      }
+    })
+    return newPromise
   }
   static resolve(data) {
     return new _Promise((resolve) => {
