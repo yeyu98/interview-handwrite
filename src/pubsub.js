@@ -2,9 +2,10 @@
  * @Author: yeyu98
  * @Date: 2024-03-08 20:53:33
  * @LastEditors: yeyu98
- * @LastEditTime: 2024-03-08 21:13:13
+ * @LastEditTime: 2024-03-08 21:16:07
  * @Description: 
  */
+// 与观察者的区别在于多了一个可以订阅的主题，观察者里的主题都是一样的，但是发布订阅里我们可以有不同的主题，不同的订阅者可以订阅不同主题的发布者
 class Observer {
     clientList = {}
     listen(key, fn) {
