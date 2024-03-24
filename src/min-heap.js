@@ -2,7 +2,7 @@
  * @Author: yeyu98
  * @Date: 2024-03-23 14:58:05
  * @LastEditors: yeyu98
- * @LastEditTime: 2024-03-24 21:47:24
+ * @LastEditTime: 2024-03-24 22:44:25
  * @Description: 
  */
 // 数组实现 [0，4， 1， 10， 8， 6, 5]
@@ -19,13 +19,24 @@ class MinHeap {
             // 左小于根节点 交换位置
             // 右大于根节点 无需交换位置
             // 右小于根节点 交换位置
-            // if(leftNode && leftNode > node) {
-            //      if(rightNode && rightNode < node) {
-
-            //      }
-            // }
-
-
+            // 左节点小于根节点 则判断左右节点哪个更小将最小的那个与根节点交换位置
+            if(leftNode && leftNode < node) {
+                if(rightNode && leftNode < rightNode) {
+                    this.heap[index] = leftNode
+                    this.heap[leftIndex] = node
+                    index = leftIndex
+                } else {
+                    this.heap[index] = rightNode
+                    this.heap[rightIndex] = node
+                    index = rightIndex
+                }
+            } else if(rightNode && rightNode < node) {
+                this.heap[index] = rightNode
+                this.heap[rightIndex] = node
+                index = rightIndex
+            } else {
+                return
+            }
         }
     }
     shiftUp(node, index) {

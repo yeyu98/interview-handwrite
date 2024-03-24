@@ -2,7 +2,7 @@
  * @Author: xiaohu
  * @Date: 2024-02-29 14:27:26
  * @LastEditors: yeyu98
- * @LastEditTime: 2024-03-23 14:56:30
+ * @LastEditTime: 2024-03-24 22:45:50
  * @FilePath: \interview-handwrite\README.md
  * @Description: 
 -->
@@ -16,3 +16,4 @@
 - [发布订阅模式](./src/pubsub.js)
 - [数组转树](./src/listToTree.js)
 - [小顶堆](./src/min-heap.js)
+  ![alt text](./assets/min-heap.png)
