@@ -2,7 +2,7 @@
  * @Author: yeyu98
  * @Date: 2024-03-23 14:58:05
  * @LastEditors: yeyu98
- * @LastEditTime: 2024-03-24 22:52:51
+ * @LastEditTime: 2024-03-26 17:14:11
  * @Description: 
  */
 // 数组实现 [0，4， 1， 10， 8， 6, 5]
@@ -11,6 +11,7 @@ class MinHeap {
     heap = []
     shiftDown(node, index) {
         const length = this.heap.length
+        console.log(length)
         while(index < length) {
             const leftIndex = (index + 1) * 2 - 1
             const leftNode = this.heap[leftIndex]
@@ -21,8 +22,8 @@ class MinHeap {
             // 右大于根节点 无需交换位置
             // 右小于根节点 交换位置
             // 左节点小于根节点 则判断左右节点哪个更小将最小的那个与根节点交换位置
-            if(leftNode && leftNode < node) {
-                if(rightNode && leftNode < rightNode) {
+            if(leftNode !== undefined && leftNode < node) {
+                if(rightNode !== undefined && leftNode < rightNode) {
                     this.heap[index] = leftNode
                     this.heap[leftIndex] = node
                     index = leftIndex
@@ -31,7 +32,7 @@ class MinHeap {
                     this.heap[rightIndex] = node
                     index = rightIndex
                 }
-            } else if(rightNode && rightNode < node) {
+            } else if(rightNode !== undefined && rightNode < node) {
                 this.heap[index] = rightNode
                 this.heap[rightIndex] = node
                 index = rightIndex
@@ -81,6 +82,8 @@ class MinHeap {
             return last
         }
         const last = this.heap.pop()
+        console.log('last', last)
+        this.heap[0] = last
         this.shiftDown(last, 0)
         console.log('pop', this.heap)
         return first
@@ -95,17 +98,17 @@ const heap = new MinHeap()
 heap.push(5)
 heap.push(1)
 heap.push(2)
-heap.push(0)
-heap.push(10)
-heap.push(11)
+// heap.push(0)
+// heap.push(10)
+// heap.push(11)
 console.log('heap.pop()', heap.pop())
 console.log('heap.pop()', heap.pop())
 heap.push(6)
 heap.push(8)
 console.log('heap.pop()', heap.pop())
 console.log('heap.pop()', heap.pop())
-console.log('heap.pop()', heap.pop())
-console.log('heap.pop()', heap.pop())
-console.log('heap.pop()', heap.pop())
+// console.log('heap.pop()', heap.pop())
+// console.log('heap.pop()', heap.pop())
+// console.log('heap.pop()', heap.pop())
 
 
