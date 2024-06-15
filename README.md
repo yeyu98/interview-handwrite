@@ -18,5 +18,5 @@
 - [小顶堆](./src/min-heap.js)
   ![alt text](./assets/min-heap.png)
 - [准时setTimeout](./src/setTimeout.js)
-- [Redux](./src/redux.js)
+- [Redux](./src/flux.js)
   ![alt text](./assets/flux.png)
