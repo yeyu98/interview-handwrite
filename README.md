@@ -2,7 +2,7 @@
  * @Author: xiaohu
  * @Date: 2024-02-29 14:27:26
  * @LastEditors: yeyu98
- * @LastEditTime: 2024-06-15 14:21:48
+ * @LastEditTime: 2024-06-15 14:24:11
  * @FilePath: \interview-handwrite\README.md
  * @Description: 
 -->
@@ -19,3 +19,4 @@
   ![alt text](./assets/min-heap.png)
 - [准时setTimeout](./src/setTimeout.js)
 - [Redux](./src/redux.js)
+  ![alt text](./assets/flux.png)
