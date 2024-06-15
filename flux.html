@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="counter">
+    <span></span>
+    <button class="increase">increase</button>
+    <button class="decrease">decrease</button>
+  </div>
+  <script>
+    
+
+  class Dispatcher {
+    _stores = []
+    register(store) {
+      if(!store || !store.update) {
+        throw new Error('You should provide a store that has an `update` method.');
+      }
+      const consumers = []
+      // 这里的consumer作用是啥？
+      const subscribe = (consumer, noInit) => {
+        consumers.push(consumer)
+        // 传递初始值
+        !noInit ? consumer(store) : null
+      }
+
+      const change = () => {
+        consumers.forEach(consumer => consumer(store))
+      }
+      
+      this._stores.push({store, change})
+      return subscribe
+    }
+    dispatch(action) {
+      // 如何派发视图的更新呢？
+      if(this._stores.length === 0) return
+      this._stores.forEach(entry => {
+        // update触发更新
+        entry.store.update(action, entry.change)
+      })
+    }
+  }
+
+  function create() {
+    const dispatcher = new Dispatcher()
+    return {
+      createAction(type) {
+        if(!type) {
+          throw new Error('Please, provide action\'s type.');
+        }
+        return function(payload) {
+          return dispatcher.dispatch({
+            type,
+            payload
+          })
+        }
+      },
+      createSubscriber(store) {
+        return dispatcher.register(store)
+      }
+    }
+  }
+
+  const fluxInit = {
+    create
+  }
+
+  const counterStore = {
+    _data: {counter: 0},
+    getValue() {
+      return this._data.counter
+    },
+    update(action, change) {
+      if (action.type === INCREASE) {
+        this._data.value += 1;
+      } else if (action.type === DECREASE) {
+        this._data.value -= 1;
+      }
+      change();
+    }
+  }
+  const View = (subscribeToStore, increase, decrease) => {
+    let value = null
+    const display = document.querySelector('span')
+    const increaseBtn = document.querySelector('.increase')
+    const decreaseBtn = document.querySelector('.decrease')
+
+    const render = () => display.innerHTML = value
+    const updateState  = (store) => value = counterStore.getValue() 
+    subscribeToStore([updateState, render])
+
+
+    increaseBtn.addEventListener('click', increase);
+    decreaseBtn.addEventListener('click', decrease);
+  }
+
+
+  const start = () => {
+    const { createAction, createSubscriber } = fluxInit.create()
+
+    const actions = {
+      increase: createAction('increase'),
+      decrease: createAction('decrease')
+    }
+
+    const subscribe = createSubscriber(counterStore)
+
+    View(subscribe, actions.increase, actions.decrease)
+
+  }
+
+
+
+  </script>
+</body>
+</html>
