@@ -2,7 +2,7 @@
  * @Author: xiaohu
  * @Date: 2024-02-29 14:27:26
  * @LastEditors: yeyu98
- * @LastEditTime: 2024-03-24 22:45:50
+ * @LastEditTime: 2024-06-15 14:21:48
  * @FilePath: \interview-handwrite\README.md
  * @Description: 
 -->
@@ -18,3 +18,4 @@
 - [小顶堆](./src/min-heap.js)
   ![alt text](./assets/min-heap.png)
 - [准时setTimeout](./src/setTimeout.js)
+- [Redux](./src/redux.js)
