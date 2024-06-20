@@ -2,12 +2,13 @@
  * @Author: xiaohu
  * @Date: 2024-02-29 14:27:26
  * @LastEditors: yeyu98
- * @LastEditTime: 2024-06-15 14:24:11
+ * @LastEditTime: 2024-06-20 10:54:32
  * @FilePath: \interview-handwrite\README.md
  * @Description: 
 -->
 # interview-handwrite
 
+- [防抖/节流](./src/debounce-throttle.js)
 - [并发请求数量控制](./src/limit-request.js)
 - [LazyMan](./src/lazy-man.js)
 - [Promise](./src/promise.js)
