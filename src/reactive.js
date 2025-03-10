@@ -1,4 +1,4 @@
-
+// vue3 响应式原理
 let activeEffect = null
       
 const effect = (fn) => {
