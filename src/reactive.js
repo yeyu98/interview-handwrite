@@ -57,3 +57,62 @@ effect(() => {
 
 state.count = 2
 state.count++
+
+
+// class 版
+class Reactive {
+    static activeEffect = null
+    triggerMap = new WeakMap()
+    constructor(value) {
+        return this.init(value)
+    }
+    init (target) {
+        const that = this
+        return new Proxy(target, {
+            get(target, key, receiver) {
+                that.track(target, key)
+                return Reflect.get(target, key, receiver)
+            },
+            set(target, key, value, receiver) {
+              const result = Reflect.set(target, key, value,receiver)
+              that.trigger(target, key)
+              return result
+            }
+        })
+    }
+    static effect(fn) {
+        Reactive.activeEffect = fn
+        fn()
+        Reactive.activeEffect = null
+    }
+    trigger(target, key) {
+        const depsMap = this.triggerMap.get(target)
+        if(!depsMap) return
+        const effects = depsMap.get(key)
+        if(effects) {
+            effects.forEach(fn => fn())
+        }
+    }
+    track(target, key) {
+        if(Reactive.activeEffect) {
+            let depsMap = this.triggerMap.get(target)
+            if(!depsMap) {
+                depsMap = new Map()
+                this.triggerMap.set(target, depsMap)
+            }
+            let deps = depsMap.get(key)
+            if(!deps) {
+                deps = new Set()
+                depsMap.set(key, deps)
+            }
+            deps.add(Reactive.activeEffect)
+        }
+    }
+  }
+  const state = new Reactive({count: 1})
+  Reactive.effect(() => {
+    console.log(`count 更新：${state.count}`);
+  })
+
+  state.count = 2
+  state.count++
